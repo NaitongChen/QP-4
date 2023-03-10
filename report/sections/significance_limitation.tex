@@ -6,13 +6,15 @@ One of the most prominent advantages of the fully Bayesian approach to adjusting
 \]
 Here we use $p(\cdot)$ as the prior density corresponding to each parameter of interest, $p(\cdot \given \cdot)$ as the likelihood, and $Z$ as the normalization constant. Also note that $X$ and $N$ denote vectors containing the number of positive tests in the sample and total sample size for each region considered in the study. Given $p(s_{ij} \given X, N)$, the 95\% equal-tailed credible interval for $s_{ij}$ corresponds to the range of possible $s_{ij}$ values that covers the middle 95\% of the area under $p(s_{ij} \given X, N)$. In other words, if we were to sample from this marginal posterior distribution, there is a 95\% chance that the sampled value is within the credible interval. Furthermore, since the prior distribution on $s_{ij}$ ($p(s_{ij})$ in the expression of $p(s_{ij} \given X, N)$) is Beta and has support $[0,1]$, it is guaranteed by construction that the credible interval is contained in $[0,1]$.\\
 \newline$ $
-On the other hand, 
-
-%no negative interval
-%
-%interpretability of intervals
-%
-%can incorporate prior knowledge
+On the other hand, by following the non-Bayesian approach in (cite), we may obtain negative estimates or uncertainty intervals that cross zero. This can be seen from the cumulative incidence correction equation from the previous section. When the sample proportion of positive tests $\hat{p}$ is smaller than $1-sp$, the resulting estimate of the cumulative incidence would be negative. At the same time, note that the interval reprensenting the uncertainty around the estimated cumulative incidence is obtained by plugging in endpoints of two independent confidence intervals (one on test specificity and one on test sensitivity). We know that each 95\% confidence interval is a realization of all possible intervals that overall have a 95\% chance of covering what is regarded as the underlying true value. Then the proportion of pairs of 95\% confidence intervals on test specificity and test sensitivity covering the true values simultaneously is less than 95\%. As a result, by constructing an interval through aggregating two independent 95\% confidence intervals, the resulting interval would not be a valid 95\% confidence interval. This complicates the interpretation of the resulting interval. Furthermore, uncertainty intervals constructed this way do not take into account the uncertainties around the sample proportion of positive tests.\\
+\newline$ $
+In the non-Bayesian analysis of the same dataset, (cite) takes on a different approach quantifying the uncertainty around each estimated cumulative incidence. The procedure can be summarized as follows. Given the number of positive tests as well as total sample size in a region, we can construct a 95\% confidence interval on the observed prevalence for that given region. We denote this interval $[p_l, p_u]$. To incorporate the uncertainty of test-kit performance, we can construct the following three sets of 95\% confidence intervals on the cumulative incidence
+\[
+[(p_l + \hat{sp} - 1) / (\hat{se} + \hat{sp} - 1), \quad &(p_u + \hat{sp} - 1) / (\hat{se} + \hat{sp} - 1)],\\
+[(p_l + sp_l - 1) / (se_u + sp_l - 1), \quad &(p_u + sp_l - 1) / (se_u + sp_l - 1)],\\
+[(p_l + sp_u - 1) / (se_l + sp_u - 1), \quad &(p_u + sp_u - 1) / (se_l + sp_u - 1)].
+\]
+Note here $\hat{se}, \hat{sp}$ are the point estimates for test sensitivity and specificity from the validation studies, with the corresponding 95\% confidence intervals being $[se_l, se_u]$ and $[sp_l, sp_u]$. In the above three intervals, the first one corresponds to the average test-kit performance obtained from the validation studies, the second interval corresponds to the worst case of combined test-kit performance, and the third interval corresponds to the best case of combined test-kit performance. While this approach takes into account both the uncertainties of the sample proportion of positive tests as well as test-kit performance, the use of three intervals still makes the quantified uncertainty not as easily interpreted as that using the Bayesian credible intervals.
 
 \section{Limitations and challenges}
 talk about hierarchical model word misuse
