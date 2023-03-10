@@ -1,9 +1,18 @@
 \section{Significance}
-no negative interval
+One of the most prominent advantages of the fully Bayesian approach to adjusting cumulative incidence for test-kit performance is that the quantified uncertainty is more interpretable compared to its non-Bayesian counterpart. This is precisely the motivation behind the development of this Bayesian procedure by (cite). In the Bayesian version of the analysis, (cite) expresses the uncertainty of the cumulative incidence for a given region using a 95\% equal-tailed credible interval of the corresponding marginal posterior distribution. As an example, the credible interval of the cumulative incidence in the $i^\text{th}$ region in the $j^\text{th}$ super-region $s_{ij}$ can be constructed as follows. We begin by writing out the marginal posterior density for $s_{ij}$:
+\[
+&p(s_{ij} \given X, N)\\
+&= \frac{1}{Z} \int_{se}\int_{sp} p(se)p(sp) \left(\prod_{(r,q) \neq (i,j)} \int_{s_{rq}} p(s_{rq})p(x_{rq} \given n_{rq}, sp, se, s_{rq}) \partial s_{rq}\right) p(s_{ij})p(x_{ij} \given n_{ij}, sp, se, s_{ij}) \partial se \partial sp.
+\]
+Here we use $p(\cdot)$ as the prior density corresponding to each parameter of interest, $p(\cdot \given \cdot)$ as the likelihood, and $Z$ as the normalization constant. Also note that $X$ and $N$ denote vectors containing the number of positive tests in the sample and total sample size for each region considered in the study. Given $p(s_{ij} \given X, N)$, the 95\% equal-tailed credible interval for $s_{ij}$ corresponds to the range of possible $s_{ij}$ values that covers the middle 95\% of the area under $p(s_{ij} \given X, N)$. In other words, if we were to sample from this marginal posterior distribution, there is a 95\% chance that the sampled value is within the credible interval. Furthermore, since the prior distribution on $s_{ij}$ ($p(s_{ij})$ in the expression of $p(s_{ij} \given X, N)$) is Beta and has support $[0,1]$, it is guaranteed by construction that the credible interval is contained in $[0,1]$.\\
+\newline$ $
+On the other hand, 
 
-interpretability of intervals
-
-can incorporate prior knowledge
+%no negative interval
+%
+%interpretability of intervals
+%
+%can incorporate prior knowledge
 
 \section{Limitations and challenges}
 talk about hierarchical model word misuse
