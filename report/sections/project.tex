@@ -1,23 +1,6 @@
 \section{Paper-specific project}
 
 \subsection{Data}
-
-\begin{table}[]
-\centering
-\caption{Number of runs that do not select any variable}
-\label{tab:num_none}
-\begin{tabular}{c|cc|cc}
-                           & \multicolumn{2}{c}{\textbf{Phase I}} & \multicolumn{2}{c}{\textbf{Phase II (unvaccinated)}} \\
-                           & reactive      & tested      & reactive              & tested              \\
-                           \hline
-Montreal-Laval             & 90            & 3061        & 48                    & 1925                \\
-Surrounding Montreal-Laval & 48            & 1925        & 128                   & 1422                \\
-Other                      & 35            & 2705        & 372                   & 4304                \\
-\hline
-Total                      & 173           & 7691        & 715                   & 7304               
-\end{tabular}
-\end{table}
-
 The datasets used in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} together can be viewed as one for a serial COVID-19 seroprevalence study in Quebec, Canada. \\
 \newline $ $
 The first dataset contains numbers of antibody-positive samples as well as total number of samples for each region in Quebec (Montreal-Laval, surrounding Montreal-Laval, and other regions). These samples are collected relatively early on in the pandemic, from May 25 to July 9, 2020. The second dataset follows the same structure, but contains samples collected between January 25 and Mar 11, 2021. \\
@@ -25,6 +8,22 @@ The first dataset contains numbers of antibody-positive samples as well as total
 In addition, \cite{lewin2022seroprevalence} also contains results from a seroreversion substudy. Namely, we also have the number of antibody-positive samples from 2020 that remained positive in 2021. \\
 \newline $ $
 Note that in the second study, the count of antibody-positive samples are available at a finer scale (each of Montreal-Laval, surrounding Montreal-Laval, and other regions are broken down into smaller regions), this is not the case for \cite{lewin2021sars}. Therefore the analysis will only be conducted at the bigger regional level.
+
+\begin{table}[]
+\centering
+\label{tab:dat}
+\begin{tabular}{c|cc|cc|cc}
+                           & \multicolumn{2}{c}{\textbf{Phase I}} & \multicolumn{2}{c}{\textbf{Phase II (unvaccinated)}} & \multicolumn{2}{c}{\textbf{Seroreversion substudy}}\\
+                           & reactive      & tested      & reactive              & tested      & reactive              & tested        \\
+                           \hline
+Montreal-Laval             & 90            & 3061        & 48                    & 1925      & - & -          \\
+Surrounding Montreal-Laval & 48            & 1925        & 128                   & 1422   & - & -             \\
+Other                      & 35            & 2705        & 372                   & 4304          & - & -      \\
+\hline
+Total                      & 173           & 7691        & 715                   & 7304          &    32 & 109  
+\end{tabular}
+\caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}.}
+\end{table}
 
 \subsection{Project Idea}
 We can apply the approach in \cite{meyer2022adjusting} to the two datasets in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} in one coherent Bayesian model that accounts for seroreversion. \\
@@ -60,8 +59,7 @@ It turns out that the intervals constructed from \cite{rosenberg2020cumulative} 
 
 \begin{table}[]
 \centering
-\caption{}
-\label{tab:my-table}
+\label{tab:results}
 \begin{tabular}{c|ccc}
                            & \multicolumn{3}{c}{\textbf{Raw result}}                                        \\
                            & mean                & lowerbound             & upperbound             \\
@@ -87,6 +85,7 @@ Montreal-Laval             & 0.159               & 0.137                  & 0.18
 Surrounding Montreal-Laval & 0.105               & 0.085                  & 0.125                  \\
 Other                      & 0.096               & 0.082                  & 0.110                 
 \end{tabular}
+\caption{Summary of regional cumulative incidence point estimates and uncertainty intervals for all methods discussed.}
 \end{table}
 
 \captionsetup[subfigure]{labelformat=empty}
@@ -94,7 +93,7 @@ Other                      & 0.096               & 0.082                  & 0.11
 \centering
 \begin{subfigure}[b]{\columnwidth} 
     \includegraphics[width=\columnwidth]{../../plot/trace_global.png}
-    \caption{(a)}
+    \caption{Trace plots for test sensitivity ($se$), test specificity ($sp$), and seroreversion rate ($sr$).}
 \end{subfigure}
 \end{figure}
 
@@ -103,7 +102,7 @@ Other                      & 0.096               & 0.082                  & 0.11
 \centering
 \begin{subfigure}[b]{\columnwidth} 
     \includegraphics[width=\columnwidth]{../../plot/trace_regional.png}
-    \caption{(a)}
+    \caption{Trace plots for regional cumulative incidences. The first row correponds to cumulative incidences after Phase I of the study, and the second row correponds to cumulative incidences after Phase II of the study.}
 \end{subfigure}
 \end{figure}
 
@@ -112,6 +111,6 @@ Other                      & 0.096               & 0.082                  & 0.11
 \centering
 \begin{subfigure}[b]{\columnwidth} 
     \includegraphics[width=\columnwidth]{../../plot/intervals.png}
-    \caption{(a)}
+    \caption{Comparison between uncertainty intervals for regional cumulative incidences between the Bayesian (B) and non-Bayesian (F) seroprevalence analyses, where both seroreversion and test-kit performance are accounted for.}
 \end{subfigure}
 \end{figure}
