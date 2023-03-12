@@ -1,6 +1,23 @@
 \section{Paper-specific project}
 
 \subsection{Data}
+
+\begin{table}[]
+\centering
+\caption{Number of runs that do not select any variable}
+\label{tab:num_none}
+\begin{tabular}{c|cc|cc}
+                           & \multicolumn{2}{c}{\textbf{Phase I}} & \multicolumn{2}{c}{\textbf{Phase II (unvaccinated)}} \\
+                           & reactive      & tested      & reactive              & tested              \\
+                           \hline
+Montreal-Laval             & 90            & 3061        & 48                    & 1925                \\
+Surrounding Montreal-Laval & 48            & 1925        & 128                   & 1422                \\
+Other                      & 35            & 2705        & 372                   & 4304                \\
+\hline
+Total                      & 173           & 7691        & 715                   & 7304               
+\end{tabular}
+\end{table}
+
 The datasets used in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} together can be viewed as one for a serial COVID-19 seroprevalence study in Quebec, Canada. \\
 \newline $ $
 The first dataset contains numbers of antibody-positive samples as well as total number of samples for each region in Quebec (Montreal-Laval, surrounding Montreal-Laval, and other regions). These samples are collected relatively early on in the pandemic, from May 25 to July 9, 2020. The second dataset follows the same structure, but contains samples collected between January 25 and Mar 11, 2021. \\
@@ -40,3 +57,61 @@ Altogether, this can give us an estimate of the seroprevalance in Quebec, Canada
 We can compare the results from this above Bayesian model to those from \cite{lewin2022seroprevalence} (which is not Bayesian and does not account for test-kit performance) as well a frequentist equivalence of the above Bayesian model using the same data. We can use these results to check if the claims from \cite{lewin2022seroprevalence} still hold under this different dataset, as well as to explore potential reasons as to why they do or do not hold.\\
 \newline $ $
 It turns out that the intervals constructed from \cite{rosenberg2020cumulative} (the non-Bayesian analysis that \cite{meyer2022adjusting} compared to) is just by using the $95\%$ confidence interval endpoints for test sensitivity and specificity to correct for the true seroprevalence using $P = S \times Se + (1-S) \times (1-Sp)$.
+
+\begin{table}[]
+\centering
+\caption{}
+\label{tab:my-table}
+\begin{tabular}{c|ccc}
+                           & \multicolumn{3}{c}{\textbf{Raw result}}                                        \\
+                           & mean                & lowerbound             & upperbound             \\
+Montreal-Laval             & 0.136               & 0.120                  & 0.154                  \\
+Surrounding Montreal-Laval & 0.090               & 0.076                  & 0.106                  \\
+Other                      & 0.086               & 0.078                  & 0.095                  \\
+\hline
+                           & \multicolumn{3}{c}{\textbf{Adjusted for seroreversion}}                          \\
+                           & mean                & lowerbound             & upperbound             \\
+Montreal-Laval             & 0.145               & 0.125                  & 0.168                  \\
+Surrounding Montreal-Laval & 0.097               & 0.080                  & 0.119                  \\
+Other                      & 0.090               & 0.080                  & 0.102                  \\
+\hline
+                           & \multicolumn{3}{c}{\textbf{Adjusted for seroreversion and test-kit performance}} \\
+                           & mean                & lowerbound             & upperbound             \\
+Montreal-Laval             & 0.161               & 0.115                  & 0.177                  \\
+Surrounding Montreal-Laval & 0.107               & 0.062                  & 0.120                  \\
+Other                      & 0.100               & 0.056                  & 0.110                  \\
+\hline
+                           & \multicolumn{3}{c}{\textbf{Bayesian analysis adjusted for seroreversion and test-kit performance}}                                 \\
+                           & median              & lowerbound             & upperbound             \\
+Montreal-Laval             & 0.159               & 0.137                  & 0.183                  \\
+Surrounding Montreal-Laval & 0.105               & 0.085                  & 0.125                  \\
+Other                      & 0.096               & 0.082                  & 0.110                 
+\end{tabular}
+\end{table}
+
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}[b]{\columnwidth} 
+    \includegraphics[width=\columnwidth]{../../plot/trace_global.png}
+    \caption{(a)}
+\end{subfigure}
+\end{figure}
+
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}[b]{\columnwidth} 
+    \includegraphics[width=\columnwidth]{../../plot/trace_regional.png}
+    \caption{(a)}
+\end{subfigure}
+\end{figure}
+
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[ht!]
+\centering
+\begin{subfigure}[b]{\columnwidth} 
+    \includegraphics[width=\columnwidth]{../../plot/intervals.png}
+    \caption{(a)}
+\end{subfigure}
+\end{figure}

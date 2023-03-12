@@ -1,6 +1,7 @@
 #### load libraries ####
 library(nimble, warn.conflicts = FALSE, quietly = TRUE)
 library(dplyr)
+library(ggplot2)
 library(mcmcplots)
 library(coda)
 
