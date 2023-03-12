@@ -10,7 +10,7 @@ Since antibody tests are not 100\% accurate, there may be positive cases that te
 p = s \times se + (1-s) \times (1 - sp).
 \]
 To put in words, the observed prevalence can be decomposed into the proportion of actual cases that correctly test positive and noncases that incorrectly test positive. There are multiple approaches for incorporating this test-kit performance adjustment into the analysis of seroprevalence data. \cite{meyer2022adjusting} proposes a novel Bayesian model that adjusts cumulative incidence for test-kit performance. This method is then applied to a dataset from a COVID-19 seroprevalence study (based on detection of SARS-Cov-2 IgG) conducted in New York state in early 2020. We walk through the construction of this method in the following section.
-\section{A Bayesian Approach to Analysis of Seroprevalence Data}
+\section{A Bayesian Approach to Analyzing Seroprevalence Data}
 Given the total sample size $n$ from some region and the number of positive tests $x$ from the sample, we can follow the above test-kit performance adjustment and model the number of positive tests as the outcome of a Binomial distribution with the total sample size as the number of trials and observed prevalence as the probability of success, i.e.,
 \[
 x \given n, s, se, sp \distas \distBinom\left(n, s \times se + (1-s) \times (1 - sp)\right) = \distBinom(n, p).
