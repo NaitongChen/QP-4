@@ -28,34 +28,30 @@ Total                      & 173           & 7691        & 715                  
 \subsection{Project Idea}
 We can apply the approach in \cite{meyer2022adjusting} to the two datasets in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} in one coherent Bayesian model that accounts for seroreversion. \\
 \newline $ $
-Let $S_{ij}$ denote the true seroprevalence in study $i$ and region $j$ ($i=1$ and $i=2$ correspond to first and second study, $j=1,j=2$ and $j=3$ correspond to Montreal-Laval, surrounding Montreal-Laval, and other regions). Let $P_{ij}$ denote the observed seroprevalances. Let $Se, Sp, Sr$ denote sensitivity of test-kit, specificity of test-kit, as well as proportion of samples that has seroreverted (testing antibody-negative in 2021 but antibody-positive in 2020). Let $x_{ij}$ denote the total number of antibody-positive samples in region $j$ at study $i$, and $n_{ij}$ denote the total number of samples in region $j$ at study $i$. Finally, let $x_r$ and $n_r$ denote the total number of samples that seroreverted and the total number of samples in the seroreversion substudy. \\
+Let $s_{ij}$ denote the true seroprevalence in study $i$ and region $j$ ($i=1$ and $i=2$ correspond to first and second study, $j=1,j=2$ and $j=3$ correspond to Montreal-Laval, surrounding Montreal-Laval, and other regions). Let $P_{ij}$ denote the observed seroprevalances. Let $se, sp, sr$ denote sensitivity of test-kit, specificity of test-kit, as well as proportion of samples that has seroreverted (testing antibody-negative in 2021 but antibody-positive in 2020). Let $x_{ij}$ denote the total number of antibody-positive samples in region $j$ at study $i$, and $n_{ij}$ denote the total number of samples in region $j$ at study $i$. Finally, let $x_r$ and $n_r$ denote the total number of samples that seroreverted and the total number of samples in the seroreversion substudy. \\
 \newline $ $
 The model can then be written as
 \[
-P_{11} &= S_{11} \times Se + (1 - S_{11}) \times (1 - Sp)\\
-P_{12} &= S_{12} \times Se + (1 - S_{12}) \times (1 - Sp)\\
-P_{13} &= S_{13} \times Se + (1 - S_{13}) \times (1 - Sp)\\
-P_{21} &= (S_{21} - Sr \times S_{11}) \times Se + (1 - (S_{21} - Sr \times S_{11})) \times (1 - Sp)\\
-P_{22} &= (S_{22} - Sr \times S_{12}) \times Se + (1 - (S_{22} - Sr \times S_{12})) \times (1 - Sp)\\
-P_{23} &= (S_{23} - Sr \times S_{13}) \times Se + (1 - (S_{23} - Sr \times S_{13})) \times (1 - Sp)\\
-S_{11} &\sim \distBeta(\cdot, \cdot)\\
-S_{12} &\sim \distBeta(\cdot, \cdot)\\
-S_{13} &\sim \distBeta(\cdot, \cdot)\\
-S_{21} &\sim \distBeta(\cdot, \cdot)_{\{ Sr \times S_{11} , 1 \}}\\
-S_{22} &\sim \distBeta(\cdot, \cdot)_{\{ Sr \times S_{12} , 1 \}}\\
-S_{23} &\sim \distBeta(\cdot, \cdot)_{\{ Sr \times S_{13} , 1 \}}\\
-Se &\sim \distBeta(\cdot, \cdot)\\
-Sp &\sim \distBeta(\cdot, \cdot)\\
-Sr &\sim \distBeta(\cdot, \cdot)\\
-L(P, S, Se, Sp, Sr \given X, N) &\propto \left(\prod_{i=1}^2\prod_{j=1}^3 P_{ij}^{x_{ij}} (1 - P_{ij})^{n_{ij} - x_{ij}}\right)\left( Sr^{x_r} (1-Sr^{n_r - x_r}) \right)
+s_{1j} &\sim \distBeta(1,1) \quad \forall j \in \{1,2,3\}\\
+s_{2j} &\sim \distBeta(1, 1)_{\{ sr \times s_{1j} , 1 \}} \quad \forall j \in \{1,2,3\}\\
+se &\sim \distBeta(205, 29)\\
+sp &\sim \distBeta(288, 2)\\
+sr &\sim \distBeta(32, 77)\\
+p_{1j} &= s_{1j} \times se + (1 - s_{1j}) \times (1 - sp) \quad \forall j \in \{1,2,3\}\\
+p_{2j} &= (s_{2j} - sr \times s_{1j}) \times se + (1 - (s_{2j} - sr \times s_{1j})) \times (1 - sp) \quad \forall j \in \{1,2,3\}\\
+x_{ij} \given n_{ij}, p_{ij} &\distind \distBinom(n_{ij}, p_{ij}), \quad \forall i \in\{1,2\}, \quad j \in \{1,2,3\}.
 \]
-Note that for observed seroprevalences in the first study, we adjust for test sensivitity and test specificity (Following the setup in \cite{meyer2022adjusting}. We'll likely use the same prior on $Se$ and $Sp$ here). For observed seroprevalences in the second study, we adjust for both test sensivitity and test specificity as well as seroreversion. Namely, we also include the proportion that have seroreverted since the first study using information from the seroreversion substudy. This combines the setup in \cite{lewin2022seroprevalence} and \cite{meyer2022adjusting}: we first substract the proportion that have seroreverted from the true seroprevalence and then adjust for test-kit performance. This is because the test-kit only has a chance at detecting antibodies if the subject has not seroreverted. To ensure we do not run into negative seroprevalence estimates, we truncate $S_{21}, S_{22}, S_{23}$ accordingly.\\
+Following the notation from the previous section, the density of the target posterior distribution is given by
+\[
+p(S, se, sp, sr \given X, N) = \frac{1}{Z}p(se)p(sp)p(sr)\prod_{i=1}^3\prod_{j=1}^2 p(s_{ij})p(x_{ij}\given sp, se, sr, s_{ij}).
+\]
+Note that for observed seroprevalences in the first study, we adjust for test sensivitity and test specificity (Following the setup in \cite{meyer2022adjusting}. We'll likely use the same prior on $se$ and $sp$ here). For observed seroprevalences in the second study, we adjust for both test sensivitity and test specificity as well as seroreversion. Namely, we also include the proportion that have seroreverted since the first study using information from the seroreversion substudy. This combines the setup in \cite{lewin2022seroprevalence} and \cite{meyer2022adjusting}: we first substract the proportion that have seroreverted from the true seroprevalence and then adjust for test-kit performance. This is because the test-kit only has a chance at detecting antibodies if the subject has not seroreverted. To ensure we do not run into negative seroprevalence estimates, we truncate $s_{21}, s_{22}, s_{23}$ accordingly.\\
 \newline $ $
 Altogether, this can give us an estimate of the seroprevalance in Quebec, Canada in January to March 2021 adjusting for test-kit performance as well as seroreversion.\\
 \newline $ $
 We can compare the results from this above Bayesian model to those from \cite{lewin2022seroprevalence} (which is not Bayesian and does not account for test-kit performance) as well a frequentist equivalence of the above Bayesian model using the same data. We can use these results to check if the claims from \cite{lewin2022seroprevalence} still hold under this different dataset, as well as to explore potential reasons as to why they do or do not hold.\\
 \newline $ $
-It turns out that the intervals constructed from \cite{rosenberg2020cumulative} (the non-Bayesian analysis that \cite{meyer2022adjusting} compared to) is just by using the $95\%$ confidence interval endpoints for test sensitivity and specificity to correct for the true seroprevalence using $P = S \times Se + (1-S) \times (1-Sp)$.
+It turns out that the intervals constructed from \cite{rosenberg2020cumulative} (the non-Bayesian analysis that \cite{meyer2022adjusting} compared to) is just by using the $95\%$ confidence interval endpoints for test sensitivity and specificity to correct for the true seroprevalence using $p = s \times se + (1-s) \times (1-sp)$.
 
 \begin{table}[]
 \centering
