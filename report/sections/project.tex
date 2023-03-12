@@ -1,17 +1,14 @@
 \section{Bayesian Seroprevalence Analysis with Seroreversion Correction}
-
+In a serial seroprevalence study conducted in Quebec, Canada by \cite{lewin2021sars} and \cite{lewin2022seroprevalence}, a procedure for seroreversion correction is applied in a non-Bayesian analysis. Here we begin by describing the dataset used in this analysis before illustrating the procedure used to adjust estimated cumulative incidences for seroreversion.
 \subsection{Data}
-The datasets used in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} together can be viewed as one for a serial COVID-19 seroprevalence study in Quebec, Canada. \\
+The datasets used in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} together can be viewed as one for a serial COVID-19 seroprevalence study in Quebec, Canada. For both phases of the study, numbers of antibody-positive samples as well as total number of samples are recorded for each of the three regions in Quebec: Montreal-Laval region, region surrounding Montreal-Laval, as well as other regions. Phase I of the study was conducted relatively early in the pandemic, and it collected samples obtained between May 25 and July 9, 2020. Phase II of the study contains samples collected from  January 25 to Mar 11, 2021.\\
 \newline $ $
-The first dataset contains numbers of antibody-positive samples as well as total number of samples for each region in Quebec (Montreal-Laval, surrounding Montreal-Laval, and other regions). These samples are collected relatively early on in the pandemic, from May 25 to July 9, 2020. The second dataset follows the same structure, but contains samples collected between January 25 and Mar 11, 2021. \\
+While we can use the data from phase I of the study to estimate regional cumulative incidences in Quebec between the beginning of the pandemic until around May 23, 2020 (accounting for the average 25 days between infection and when antibodies become detectable), simply repeating the same analysis using data from phase II of the study likely would not result in valid estimates of cumulative incidences between the beginning of the pandemic and the beginning of 2021. This is because there had already been almost a year since the beginning of the pandemic by the time when phase II samples were collected. Some of the individuals may have had a previous infection but had seroreverted by the time of sample collection. Consequently, the raw estimates may be lower than the true cumulative incidence of a given region. As a result, to account for seroreversion when analyzing data from phase II of the seroprevalence study, \cite{lewin2022seroprevalence} also conducted a seroreversion substudy. In particular, a number of the individuals who tested postive for SARS-Cov-2 antibodies during phase I of the study were tested again in 2021. The number of these individuals as well as the number of positive tests were recorded. The data from both phases of the study are summarized in \cref{tab:dat}.\\
 \newline $ $
-In addition, \cite{lewin2022seroprevalence} also contains results from a seroreversion substudy. Namely, we also have the number of antibody-positive samples from 2020 that remained positive in 2021. \\
-\newline $ $
-Note that in the second study, the count of antibody-positive samples are available at a finer scale (each of Montreal-Laval, surrounding Montreal-Laval, and other regions are broken down into smaller regions), this is not the case for \cite{lewin2021sars}. Therefore the analysis will only be conducted at the bigger regional level.
+It is important to note that the phase II data presented here only concern the unvaccinated population. While data for both those who were and were not vaccinated are presented in \cite{lewin2022seroprevalence}, we have chosen to focus on the unvaccinated population since none of the vaccinated individuals had seroreverted at the time and so it is not necessary for adjust for seroreversion.
 
 \begin{table}[]
 \centering
-\label{tab:dat}
 \begin{tabular}{c|cc|cc|cc}
                            & \multicolumn{2}{c}{\textbf{Phase I}} & \multicolumn{2}{c}{\textbf{Phase II (unvaccinated)}} & \multicolumn{2}{c}{\textbf{Seroreversion substudy}}\\
                            & reactive      & tested      & reactive              & tested      & reactive              & tested        \\
@@ -20,12 +17,17 @@ Montreal-Laval             & 90            & 3061        & 48                   
 Surrounding Montreal-Laval & 48            & 1925        & 128                   & 1422   & - & -             \\
 Other                      & 35            & 2705        & 372                   & 4304          & - & -      \\
 \hline
-Total                      & 173           & 7691        & 715                   & 7304          &    32 & 109  
+Total                      & 173           & 7691        & 715                   & 7304          &    77 & 109  
 \end{tabular}
-\caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}.}
+\caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}. Reactive indicates a positive test against SARS-Cov-2 IgG.}
+\label{tab:dat}
 \end{table}
+\subsection{Adjusting for seroreversion}
+omg
 
-\subsection{Project Idea}
+\subsection{Model formulation}
+To maintian nice properties of Bayesian model while still accounting for seroreversion, can combine.
+
 We can apply the approach in \cite{meyer2022adjusting} to the two datasets in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} in one coherent Bayesian model that accounts for seroreversion. \\
 \newline $ $
 Let $s_{ij}$ denote the true seroprevalence in study $i$ and region $j$ ($i=1$ and $i=2$ correspond to first and second study, $j=1,j=2$ and $j=3$ correspond to Montreal-Laval, surrounding Montreal-Laval, and other regions). Let $P_{ij}$ denote the observed seroprevalances. Let $se, sp, sr$ denote sensitivity of test-kit, specificity of test-kit, as well as proportion of samples that has seroreverted (testing antibody-negative in 2021 but antibody-positive in 2020). Let $x_{ij}$ denote the total number of antibody-positive samples in region $j$ at study $i$, and $n_{ij}$ denote the total number of samples in region $j$ at study $i$. Finally, let $x_r$ and $n_r$ denote the total number of samples that seroreverted and the total number of samples in the seroreversion substudy. \\
@@ -81,7 +83,7 @@ Montreal-Laval             & 0.159               & 0.137                  & 0.18
 Surrounding Montreal-Laval & 0.105               & 0.085                  & 0.125                  \\
 Other                      & 0.096               & 0.082                  & 0.110                 
 \end{tabular}
-\caption{Summary of regional cumulative incidence point estimates and uncertainty intervals for all methods discussed.}
+\caption{Summary of regional cumulative incidence point estimates and uncertainty intervals for all methods discussed. The first three non-Bayesian analyses contain the mean estimate as well as an uncertainty interval constructed from multiple $95$\% confidence intervals, and the last Bayesian analysis contain the median and equal-tailed $95$\% credible interval of the corresponding posterior distribution.}
 \end{table}
 
 \captionsetup[subfigure]{labelformat=empty}
@@ -93,3 +95,5 @@ Other                      & 0.096               & 0.082                  & 0.11
     \label{fig:intervals}
 \end{subfigure}
 \end{figure}
+
+\subsection{Discussion of analysis results}
