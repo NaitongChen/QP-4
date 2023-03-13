@@ -35,7 +35,7 @@ where $Q$ is the quantile function of the standard normal distribution. Followin
 \[
 [s_{prev, l},\quad s_{prev, u}], \quad [p_{l},\quad p_{u}], \quad [sr_{l},\quad sr_{u}].
 \]
-Then to construct an uncertainty interval for $s$, we can aggregate the above three 95\% confidence intervals using combinations of the confidence interval endpoints that give the lowest and highest estimated cumulative incidence
+Then to construct an uncertainty interval for $s$, we can follow \cite{meyer2022adjusting} and aggregate the above three 95\% confidence intervals using combinations of the confidence interval endpoints that give the lowest and highest estimated cumulative incidence
 \[
 [p_l + s_{prev, l} \times sr_{l}, \quad p_u + s_{prev, u} \times sr_{u}].
 \]
@@ -85,13 +85,14 @@ Similar to \cite{meyer2022adjusting}, we use MCMC to obtain samples from the tar
 To compare the Bayesian model output, we also conduct a number of frequentist seroprevalence analyses on the same dataset. In particular, we include the raw estimates of regional cumulative incidence from phase II directly from the sample proportion of positive tests, an analysis that adjusts for seroreversion, as well as an analysis that adjusts for both seroreversion and test-kit performance. The last two analyses correspond to those described in \cref{sec:adjust_reversion}. The code used to generate all results and figures can be found at \url{https://github.com/NaitongChen/QP-4}.
 
 \subsection{Discussion of analysis results}
-omg
+The estimated regional cumulative incidences as well as their corresponding uncertainty intervals from each of the four analyses are summarized in \cref{tab:results}. We see that from each of the four analyses, the estimated cumulative incidence in the Montreal-Laval region is the highest, and those of the other two regions are similar to each other, with the region surrounding Montreal-Laval having a slightly higher estimated cumulative incidence. We now look at the estimate for the same region across the three non-Bayesian analyses. Going from the raw results to those adjusted for seroreversion, we see that there is an increase in the estimated cumulative incidence. By further adjusting for test-kit performance, we see yet another increase in the estimated cumulative incidence for the same region. This two-step increase is consistently observed for each of the three regions in Quebec. This pattern is sensible as with each additional adjustment, we are inherently adding to the cumulative incidence estimate by including parts of the population that previously would not have been considered. However, as we increase the number of items that we adjust for (seroreversion and test-kit performance), we also encounter more sources of uncertainty. Given that we have constructed our uncertainty intervals using the combination of individual 95\% confidence interval endpoints that yield the lowest and highest estimates, the resulting intervals grow wider and wider. Take the Montreal-Laval region as an example, the width of the uncertainty interval increases from $0.34$ in the raw results to $0.113$ in the analysis that accounts for both seroreversion and test-kit performance. The width of the interval more than triples. It is worth mentioning that the uncertainty intervals for $s_{prev}$ for each region (or equivalently $s_{11}, s_{12}, s_{13}$) cross zero. In other words, they contain a negative lowerbound.\\
+\newline$ $
+We now turn our attention to the output of the Bayesian model. Since the priors for each parameter of interst are properly set up, none of the estimates are negative (\cref{fig:local_trace,fig:global_trace}). Compared to the non-Bayesian analysis that also adjusts for both seroreversion and test-kit performance, we see that the point estimates for each region are very similar to each other, with the Bayesian point estimates being slightly lower. At the same time, the Bayesian $95$\% credible intervals are consistently narrower than the corresponding non-Bayesian uncertainty intervals. Again taking the Montreal-Laval region as an example, the Bayesian credible interval has a width of $0.046$, which is less than half of the width of the non-Bayesian interval ($0.113$). \cref{fig:intervals} visualizes the uncertainty intervals between the Bayesian and non-Bayesian analyses that adjust for both seroreversion and test-kit performance. We see that the non-Bayesian uncertainty intervals are not centred around the point estimate. This is likely due to the non-linearity introduced by the adjustments on estimated cumulative incidences.
 
 \begin{table}[]
 \centering
-\label{tab:results}
 \begin{tabular}{c|ccc}
-                           & \multicolumn{3}{c}{\textbf{Raw result}}                                        \\
+                           & \multicolumn{3}{c}{\textbf{Raw results}}                                        \\
                            & mean                & lowerbound             & upperbound             \\
 Montreal-Laval             & 0.136               & 0.120                  & 0.154                  \\
 Surrounding Montreal-Laval & 0.090               & 0.076                  & 0.106                  \\
@@ -116,14 +117,13 @@ Surrounding Montreal-Laval & 0.105               & 0.085                  & 0.12
 Other                      & 0.096               & 0.082                  & 0.110                 
 \end{tabular}
 \caption{Summary of regional cumulative incidence point estimates and uncertainty intervals for all methods discussed. The first three non-Bayesian analyses contain the mean estimate as well as an uncertainty interval constructed from multiple $95$\% confidence intervals, and the last Bayesian analysis contains the median and equal-tailed $95$\% credible interval of the corresponding posterior distribution.}
+\label{tab:results}
 \end{table}
 
 \captionsetup[subfigure]{labelformat=empty}
 \begin{figure}[ht!]
 \centering
-\begin{subfigure}[b]{\columnwidth} 
     \includegraphics[width=\columnwidth]{../../plot/intervals.png}
     \caption{Comparison between uncertainty intervals for regional cumulative incidences between the Bayesian (B) and non-Bayesian (F) seroprevalence analyses, where both seroreversion and test-kit performance are accounted for.}
     \label{fig:intervals}
-\end{subfigure}
 \end{figure}
