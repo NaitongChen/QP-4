@@ -11,23 +11,54 @@ It is important to point out that the phase II data presented here only concern 
 \centering
 \begin{tabular}{c|cc|cc|cc}
                            & \multicolumn{2}{c}{\textbf{Phase I}} & \multicolumn{2}{c}{\textbf{Phase II (unvaccinated)}} & \multicolumn{2}{c}{\textbf{Seroreversion substudy}}\\
-                           & reactive      & tested      & reactive              & tested      & reactive              & tested        \\
+                           & reactive      & tested      & reactive              & tested      & seroreverted              & tested        \\
                            \hline
 Montreal-Laval             & 90            & 3061        & 48                    & 1925      & - & -          \\
 Surrounding Montreal-Laval & 48            & 1925        & 128                   & 1422   & - & -             \\
 Other                      & 35            & 2705        & 372                   & 4304          & - & -      \\
 \hline
-Total                      & 173           & 7691        & 715                   & 7304          &    77 & 109  
+Total                      & 173           & 7691        & 715                   & 7304          &    32 & 109  
 \end{tabular}
-\caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}. Reactive indicates a positive test against SARS-Cov-2 IgG.}
+\caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}. Reactive indicates the number of positive tests against SARS-Cov-2 IgG.}
 \label{tab:dat}
 \end{table}
 \subsection{Adjusting for seroreversion}
-As mentioned above, not correcting for seroreversion when conducting seroprevalence analysis on data from phase II of the above mentioned study may result in unreliable estimates of regional cumulative incidences. This is because such analyses fail to account for those who have had a previous infection but had already seroreverted by the time of sample collection. Luckily, with the data from phase I of the study, for each region in Quebec, we can produce a valid estimate of the cumulative incidence between the beginning of the pandemic and May 2020. Additionally, from the seroreversion substudy, we can estimate the proportion of the antibody-positive population from phase I of the study that had seroreverted by phase II of the study. As a result, we can adjust the raw estimate of cumulative incidence from phase II by adding the product of the estimated cumulative incidence from phase I and the estimated proportion that have seroreverted. Mathematically, let $\hat{s}_{prev}$ be the cumulative incidence of a region in Quebec from phase I, $\hat{p}$ be the observed prevalence (proportion of positive samples) from phase II, and $sr$ be the proportion of seroreversion, we can estimate the cumulative incidence in phase II using
+As mentioned above, not correcting for seroreversion when conducting seroprevalence analysis on data from phase II of the above mentioned study may result in unreliable estimates of regional cumulative incidences. This is because such analyses fail to account for those who have had a previous infection but had already seroreverted by the time of sample collection. Luckily, with the data from phase I of the study, for each region in Quebec, we can produce a valid estimate of the cumulative incidence between the beginning of the pandemic and May 2020. Additionally, from the seroreversion substudy, we can estimate the proportion of the antibody-positive population from phase I of the study that had seroreverted by phase II of the study. As a result, \cite{lewin2022seroprevalence} adjusts the raw estimate of cumulative incidence from phase II by adding the product of the estimated cumulative incidence from phase I and the estimated proportion that have seroreverted. Mathematically, let $\hat{s}_{prev}$ be the estimated cumulative incidence of a region in Quebec from phase I, $\hat{p}$ be the estimated observed prevalence (proportion of positive samples) from phase II, and $\hat{sr}$ be the observed proportion of seroreversion, we can estimate the cumulative incidence between the beginning of the pandemic and the beginning of 2021 using
 \[
-\hat{s} = \hat{p} + \hat{s}_{prev} \times sr.
+\hat{s} = \hat{p} + \hat{s}_{prev} \times \hat{sr}.
 \]
-
+To quantify the uncertainty around $\hat{s}$, we begin by noting that there are three sources of uncertainty: the estimated cumulative incidence from phase I, the observed prevalence from phase II, and the proportion of seroreversion. Note that here the cumulative incidence from phase I is directly estimated using the observed prevalence from phase I. For some arbitrary proportion of interest $t$ estimated by $\hat{t} = \frac{x}{n}$, where $x$ and $n$ denote the number of positive samples and the total sample size, we can construct a $95$\% confidence interval by
+\[
+\left[ \hat{t} - Q(0.975) \times \sqrt{\frac{\hat{t}(1-\hat{t})}{n}}, \quad \hat{t} + Q(0.975) \times \sqrt{\frac{\hat{t}(1-\hat{t})}{n}} \right],
+\]
+where $Q$ is the quantile function of the standard normal distribution. Following this procedure, we can construct individual 95\% confidence intervals for the cumulative incidence from phase I $s_{prev}$ and observed prevalence from phase II $p$, as well as the proportion of seroreversion $sr$. Write these intervals as
+\[
+[s_{prev, l},\quad s_{prev, u}], \quad [p_{l},\quad p_{u}], \quad [sr_{l},\quad sr_{u}].
+\]
+Then to construct an uncertainty interval for $s$, we can aggregate the above three 95\% confidence intervals using combinations of the confidence interval endpoints that give the lowest and highest estimated cumulative incidence
+\[
+[p_l + s_{prev, l} \times sr_{l}, \quad p_u + s_{prev, u} \times sr_{u}].
+\]
+Again, the above interval is not a valid $95$\% confidence interval, but it nonetheless quantifies the scale of uncertainty.\\
+\newline$ $
+We can easily extend the model above and incorporate adjustment for test-kit performance. This is achieved by writing, with $p_{prev}$ denoting the observed prevalence in phase I,
+\[
+p_{prev} = s_{prev} \times se + (1-s_{prev}) \times (1 - sp) &\implies s_{prev} = \frac{p_{prev} + sp - 1}{se + sp - 1},\\
+p = (s - sr \times s_{prev}) \times se + (1 - (s - sr \times s_{prev})) \times (1 - sp) &\implies s = \frac{p+1-sp}{se+sp-1} + sr \times s_{prev}.
+\]
+In this above formulation of observed prevalence from phase II ($p$), we first substract from the true cumulative incidence the proportion that have seroreverted from the true seroprevalence, and then adjust for test-kit performance. This is because the test-kit only has a chance at detecting antibodies if the subject has not yet seroreverted. Using the same approach to aggregate over all sources of uncertainty, we arrive at the estimated cumulative incidence for a given region between the beginning of the pandemic and the beginning of 2021
+\[
+\hat{s} = \frac{\hat{p}+1-\hat{sp}}{\hat{se}+\hat{sp}-1} + \hat{sr} \times \hat{s}_{prev}
+\]
+with a corresponding uncertainty interval adjusting for both seroreversion and test-kit performance
+\[
+\left[\frac{p_l+1-sp_l}{se_u+sp_l-1} + sr_l \times s_{prev,l}, \quad \frac{p_u+1-sp_u}{se_l+sp_u-1} + sr_u \times s_{prev, u} \right],\\
+\]
+Note that
+\[
+s_{prev,l} = (p_{prev,l} + sp_l - 1) / (se_u - 1 + sp_l), \quad s_{prev,u} = (p_{prev,u} + sp_u - 1) / (se_l - 1 + sp_u).
+\]
+Finally, we note that if we had data on the unvaccinated population from each of the three regions in Quebec, we could obtain a province-wide estimate of the cumulative incidence by averaging the regional cumulative incidences weighted by the proportion of population in each region. However, this information is not included in \cite{lewin2022seroprevalence}, and so our analysis here remains regional.
 
 \subsection{Model formulation}
 To maintian nice properties of Bayesian model while still accounting for seroreversion, can combine.
@@ -51,7 +82,7 @@ Following the notation from the previous section, the density of the target post
 \[
 p(S, se, sp, sr \given X, N) = \frac{1}{Z}p(se)p(sp)p(sr)\prod_{i=1}^3\prod_{j=1}^2 p(s_{ij})p(x_{ij}\given sp, se, sr, s_{ij}).
 \]
-Note that for observed seroprevalences in the first study, we adjust for test sensivitity and test specificity (Following the setup in \cite{meyer2022adjusting}. We'll likely use the same prior on $se$ and $sp$ here). For observed seroprevalences in the second study, we adjust for both test sensivitity and test specificity as well as seroreversion. Namely, we also include the proportion that have seroreverted since the first study using information from the seroreversion substudy. This combines the setup in \cite{lewin2022seroprevalence} and \cite{meyer2022adjusting}: we first substract the proportion that have seroreverted from the true seroprevalence and then adjust for test-kit performance. This is because the test-kit only has a chance at detecting antibodies if the subject has not seroreverted. To ensure we do not run into negative seroprevalence estimates, we truncate $s_{21}, s_{22}, s_{23}$ accordingly.\\
+Note that for observed seroprevalences in the first study, we adjust for test sensivitity and test specificity (Following the setup in \cite{meyer2022adjusting}. We'll likely use the same prior on $se$ and $sp$ here). For observed seroprevalences in the second study, we adjust for both test sensivitity and test specificity as well as seroreversion. Namely, we also include the proportion that have seroreverted since the first study using information from the seroreversion substudy. To ensure we do not run into negative seroprevalence estimates, we truncate $s_{21}, s_{22}, s_{23}$ accordingly.\\
 \newline $ $
 Altogether, this can give us an estimate of the seroprevalance in Quebec, Canada in January to March 2021 adjusting for test-kit performance as well as seroreversion.\\
 \newline $ $
