@@ -58,7 +58,7 @@ Note that
 \[
 s_{prev,l} = (p_{prev,l} + sp_l - 1) / (se_u - 1 + sp_l), \quad s_{prev,u} = (p_{prev,u} + sp_u - 1) / (se_l - 1 + sp_u).
 \]
-Finally, we note that if we had data on the unvaccinated population from each of the three regions in Quebec, we could obtain a province-wide estimate of the cumulative incidence by averaging the regional cumulative incidences weighted by the proportion of population in each region. However, this information is not included in \cite{lewin2022seroprevalence}, and so our analysis here remains regional.
+Finally, we note that if we had data on the unvaccinated population from each of the three regions in Quebec, we could obtain a province-wide estimate of the cumulative incidence by averaging the regional cumulative incidences weighted by the proportion of population in each region. However, this information is not included in \cite{lewin2022seroprevalence}, and so our analysis here remains regional. We also do not adjust for age and sex of individuals due to data unavailability.
 
 \subsection{Model formulation}
 While the previous section outlines an approach to seroprevalence analysis that accounts for both seroreversion and test-kit performance, we note that the resulting uncertainty interval is not a valid 95\% confidence interval, and that it is still possible to get negative estimates in certain cases. As demonstrated in \cite{meyer2022adjusting}, this can be addressed by constructing a Bayesian version of the same analysis. We outline this model below.\\
