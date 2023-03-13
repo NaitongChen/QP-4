@@ -22,7 +22,7 @@ Total                      & 173           & 7691        & 715                  
 \caption{Seroprevalence data from \cite{lewin2021sars} and \cite{lewin2022seroprevalence}. Reactive indicates the number of positive tests against SARS-Cov-2 IgG.}
 \label{tab:dat}
 \end{table}
-\subsection{Adjusting for seroreversion}
+\subsection{Adjusting for seroreversion}\label{sec:adjust_reversion}
 As mentioned above, not correcting for seroreversion when conducting seroprevalence analysis on data from phase II of the above mentioned study may result in unreliable estimates of regional cumulative incidences. This is because such analyses fail to account for those who have had a previous infection but had already seroreverted by the time of sample collection. Luckily, with the data from phase I of the study, for each region in Quebec, we can produce a valid estimate of the cumulative incidence between the beginning of the pandemic and May 2020. Additionally, from the seroreversion substudy, we can estimate the proportion of the antibody-positive population from phase I of the study that had seroreverted by phase II of the study. As a result, \cite{lewin2022seroprevalence} adjusts the raw estimate of cumulative incidence from phase II by adding the product of the estimated cumulative incidence from phase I and the estimated proportion that have seroreverted. Mathematically, let $\hat{s}_{prev}$ be the estimated cumulative incidence of a region in Quebec from phase I, $\hat{p}$ be the estimated observed prevalence (proportion of positive samples) from phase II, and $\hat{sr}$ be the observed proportion of seroreversion, we can estimate the cumulative incidence between the beginning of the pandemic and the beginning of 2021 using
 \[
 \hat{s} = \hat{p} + \hat{s}_{prev} \times \hat{sr}.
@@ -61,13 +61,9 @@ s_{prev,l} = (p_{prev,l} + sp_l - 1) / (se_u - 1 + sp_l), \quad s_{prev,u} = (p_
 Finally, we note that if we had data on the unvaccinated population from each of the three regions in Quebec, we could obtain a province-wide estimate of the cumulative incidence by averaging the regional cumulative incidences weighted by the proportion of population in each region. However, this information is not included in \cite{lewin2022seroprevalence}, and so our analysis here remains regional.
 
 \subsection{Model formulation}
-To maintian nice properties of Bayesian model while still accounting for seroreversion, can combine.
-
-We can apply the approach in \cite{meyer2022adjusting} to the two datasets in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} in one coherent Bayesian model that accounts for seroreversion. \\
+While the previous section outlines an approach to seroprevalence analysis that accounts for both seroreversion and test-kit performance, we note that the resulting uncertainty interval is not a valid 95\% confidence interval, and that it is still possible to get negative estimates in certain cases. As demonstrated in \cite{meyer2022adjusting}, this can be addressed by constructing a Bayesian version of the same analysis. We outline this model below.\\
 \newline $ $
-Let $s_{ij}$ denote the true seroprevalence in study $i$ and region $j$ ($i=1$ and $i=2$ correspond to first and second study, $j=1,j=2$ and $j=3$ correspond to Montreal-Laval, surrounding Montreal-Laval, and other regions). Let $P_{ij}$ denote the observed seroprevalances. Let $se, sp, sr$ denote sensitivity of test-kit, specificity of test-kit, as well as proportion of samples that has seroreverted (testing antibody-negative in 2021 but antibody-positive in 2020). Let $x_{ij}$ denote the total number of antibody-positive samples in region $j$ at study $i$, and $n_{ij}$ denote the total number of samples in region $j$ at study $i$. Finally, let $x_r$ and $n_r$ denote the total number of samples that seroreverted and the total number of samples in the seroreversion substudy. \\
-\newline $ $
-The model can then be written as
+Recall that $sr$ denotes the test seroreversion proportion. Following the same notations as established in previous sections of the report, with $i=1,2$ indicate the phase of the study, and $j=1,2,3$ representing Montreal-Laval, surrounding Montreal-Laval, and other regions, the final Bayesian model can be written as
 \[
 s_{1j} &\sim \distBeta(1,1) \quad \forall j \in \{1,2,3\}\\
 s_{2j} &\sim \distBeta(1, 1)_{\{ sr \times s_{1j} , 1 \}} \quad \forall j \in \{1,2,3\}\\
@@ -78,17 +74,18 @@ p_{1j} &= s_{1j} \times se + (1 - s_{1j}) \times (1 - sp) \quad \forall j \in \{
 p_{2j} &= (s_{2j} - sr \times s_{1j}) \times se + (1 - (s_{2j} - sr \times s_{1j})) \times (1 - sp) \quad \forall j \in \{1,2,3\}\\
 x_{ij} \given n_{ij}, p_{ij} &\distind \distBinom(n_{ij}, p_{ij}), \quad \forall i \in\{1,2\}, \quad j \in \{1,2,3\}.
 \]
-Following the notation from the previous section, the density of the target posterior distribution is given by
+The density of the target posterior distribution is then given by
 \[
 p(S, se, sp, sr \given X, N) = \frac{1}{Z}p(se)p(sp)p(sr)\prod_{i=1}^3\prod_{j=1}^2 p(s_{ij})p(x_{ij}\given sp, se, sr, s_{ij}).
 \]
-Note that for observed seroprevalences in the first study, we adjust for test sensivitity and test specificity (Following the setup in \cite{meyer2022adjusting}. We'll likely use the same prior on $se$ and $sp$ here). For observed seroprevalences in the second study, we adjust for both test sensivitity and test specificity as well as seroreversion. Namely, we also include the proportion that have seroreverted since the first study using information from the seroreversion substudy. To ensure we do not run into negative seroprevalence estimates, we truncate $s_{21}, s_{22}, s_{23}$ accordingly.\\
-\newline $ $
-Altogether, this can give us an estimate of the seroprevalance in Quebec, Canada in January to March 2021 adjusting for test-kit performance as well as seroreversion.\\
-\newline $ $
-We can compare the results from this above Bayesian model to those from \cite{lewin2022seroprevalence} (which is not Bayesian and does not account for test-kit performance) as well a frequentist equivalence of the above Bayesian model using the same data. We can use these results to check if the claims from \cite{lewin2022seroprevalence} still hold under this different dataset, as well as to explore potential reasons as to why they do or do not hold.\\
-\newline $ $
-It turns out that the intervals constructed from \cite{rosenberg2020cumulative} (the non-Bayesian analysis that \cite{meyer2022adjusting} compared to) is just by using the $95\%$ confidence interval endpoints for test sensitivity and specificity to correct for the true seroprevalence using $p = s \times se + (1-s) \times (1-sp)$.
+In this above model, $p_{1j}$ is modeled in the same way as \cite{meyer2022adjusting} for all $j$, since there is no need to adjust for seroreversion. $p_{2j}$, on the other hand, accounts for both seroreversion and test-kit performance. Since the population data by the three regions in Quebece are not provided in \cite{lewin2022seroprevalence}, non-informative priors are used here. To ensure we do not run into negative seroprevalence estimates, we truncate $s_{21}, s_{22}, s_{23}$ accordingly. For the priors on test sensitivity and test specificity, we use the untruncated version of the same priors as in \cite{meyer2022adjusting}. This allows for more room for uncertainty given that these tests were conducted at a different location and at different times. Finally, the prior on seroreversion is chosen so that the mean reflects the sample proportion of seroreversion.\\
+\newline$ $
+Similar to \cite{meyer2022adjusting}, we use MCMC to obtain samples from the target posterior distribution. Specifically, samples from $s_{2j}$ for all $j$ allow us to estimate the regional cumulative incidences in Quebec between the beginning of the pandemic and the beginning of 2021, where the estimates are adjusted for both seroreversion and test-kit performance. \cref{fig:local_trace,fig:global_trace} show that the MCMC algorithm has converged (this is also confirmed by checking the Gelman-Rubin diagnostic). We follow \cite{meyer2022adjusting} and samples from all four chains ($100,000$ samples each with $100,000$ burn-in samples discarded) to obtain the median as a point estimate as well as the equal-tailed 95\% credible interval for uncertainty quantification.\\
+\newline$ $
+To compare the Bayesian model output, we also conduct a number of frequentist seroprevalence analyses on the same dataset. In particular, we include the raw estimates of regional cumulative incidence from phase II directly from the sample proportion of positive tests, those that adjust for seroreversion, as well as those that adjust for both seroreversion and test-kit performance. The last two analyses correspond to those described in \cref{sec:adjust_reversion}. The code used to generate all results and figures can be found at \url{https://github.com/NaitongChen/QP-4}.
+
+\subsection{Discussion of analysis results}
+omg
 
 \begin{table}[]
 \centering
@@ -130,5 +127,3 @@ Other                      & 0.096               & 0.082                  & 0.11
     \label{fig:intervals}
 \end{subfigure}
 \end{figure}
-
-\subsection{Discussion of analysis results}
