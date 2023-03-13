@@ -27,9 +27,10 @@ ml$estimate + p1_ml * reversion # 0.1448802
 c(ml$conf.int[1] + p1_ml_ci[1] * reversion_ci[1], ml$conf.int[2] + p1_ml_ci[2] * reversion_ci[2]) # 0.1253903 0.1679182
 
 # correct for both seroreversion and test-kit performance
+p1_ml_cci = c((p1_ml_ci[1] + sp_ci[1] - 1)/(se_ci[2] - 1 + sp_ci[1]), (p1_ml_ci[2] + sp_ci[2] - 1)/(se_ci[1] - 1 + sp_ci[2]))
 (ml$estimate - 1 + sp) / (se - 1 + sp) + reversion * p1_ml # 0.1612256
-c((ml$estimate - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_ml_ci[1] * reversion_ci[1], 
-  (ml$estimate - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_ml_ci[2] * reversion_ci[2]) # 0.1154460 0.1766398
+c((ml$conf.int[1] - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_ml_cci[1] * reversion_ci[1], 
+  (ml$conf.int[2] - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_ml_cci[2] * reversion_ci[2]) # 0.08838449 0.20061912
 
 #################
 # Surrounding 
@@ -48,9 +49,10 @@ sr$estimate + p1_sr * reversion # 0.09733445
 c(sr$conf.int[1] + p1_sr_ci[1] * reversion_ci[1], sr$conf.int[2] + p1_sr_ci[2] * reversion_ci[2]) # 0.08030107 0.11868052
 
 # correct for both seroreversion and test-kit performance
+p1_sr_cci = c((p1_sr_ci[1] + sp_ci[1] - 1)/(se_ci[2] - 1 + sp_ci[1]), (p1_sr_ci[2] + sp_ci[2] - 1)/(se_ci[1] - 1 + sp_ci[2]))
 (sr$estimate - 1 + sp) / (se - 1 + sp) + reversion * p1_sr # 0.1071653 
-c((sr$estimate - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_sr_ci[1] * reversion_ci[1], 
-  (sr$estimate - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_sr_ci[2] * reversion_ci[2]) # 0.06191794 0.12020914 
+c((sr$conf.int[1] - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_sr_cci[1] * reversion_ci[1], 
+  (sr$conf.int[2] - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_sr_cci[2] * reversion_ci[2]) # 0.0372629 0.1417927
 
 #################
 # Other
@@ -69,27 +71,7 @@ ot$estimate + p1_ot * reversion # 0.09022983
 c(ot$conf.int[1] + p1_ot_ci[1] * reversion_ci[1], ot$conf.int[2] + p1_ot_ci[2] * reversion_ci[2]) # 0.08041614 0.10210530
 
 # correct for both seroreversion and test-kit performance
-(ot$estimate - 1 + sp) / (se - 1 + sp) + reversion * p1_ot # 0.09955585 
-c((ot$estimate - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_ot_ci[1] * reversion_ci[1], 
-  (ot$estimate - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_ot_ci[2] * reversion_ci[2]) # 0.05579232 0.11016909
-
-#################
-# Total
-#################
-
-# 95 est and CI
-tot = prop.test(715, 7304, correct = FALSE)
-tot$estimate # 0.09789157
-c(tot$conf.int[1], tot$conf.int[2]) # 0.09128639 0.10491949
-
-# correct for seroreversion
-p1_tot = 173/7691
-p1_tot_test = prop.test(173, 7691, correct = FALSE)
-p1_tot_ci = c(p1_tot_test$conf.int[1], p1_tot_test$conf.int[2])
-tot$estimate + p1_tot * reversion # 0.1044953
-c(tot$conf.int[1] + p1_tot_ci[1] * reversion_ci[1], tot$conf.int[2] + p1_tot_ci[2] * reversion_ci[2]) # 0.09548463 0.11494825
-
-# correct for both seroreversion and test-kit performance
-(tot$estimate - 1 + sp) / (se - 1 + sp) + reversion * p1_tot # 0.1154361 
-c((tot$estimate - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_tot_ci[1] * reversion_ci[1], 
-  (tot$estimate - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_tot_ci[2] * reversion_ci[2]) # 0.07096872 0.12698404
+p1_ot_cci = c((p1_ot_ci[1] + sp_ci[1] - 1)/(se_ci[2] - 1 + sp_ci[1]), (p1_ot_ci[2] + sp_ci[2] - 1)/(se_ci[1] - 1 + sp_ci[2]))
+(ot$estimate - 1 + sp) / (se - 1 + sp) + reversion * p1_ot # 0.09955585
+c((ot$conf.int[1] - 1 + sp_ci[1]) / (se_ci[2] - 1 + sp_ci[1]) + p1_ot_cci[1] * reversion_ci[1], 
+  (ot$conf.int[2] - 1 + sp_ci[2]) / (se_ci[1] - 1 + sp_ci[2]) + p1_ot_cci[2] * reversion_ci[2]) # 0.03739336 0.12198961

@@ -5,7 +5,7 @@ The datasets used in \cite{lewin2021sars} and \cite{lewin2022seroprevalence} tog
 \newline $ $
 While we can use the data from phase I of the study to estimate regional cumulative incidences in Quebec between the beginning of the pandemic until around May 23, 2020 (accounting for the average 25 days between infection and when antibodies become detectable), simply repeating the same analysis using data from phase II of the study likely would not result in valid estimates of cumulative incidences between the beginning of the pandemic and the beginning of 2021. This is because there had already been almost a year since the beginning of the pandemic by the time when phase II samples were collected. Some of the individuals may have had a previous infection but had seroreverted by the time of sample collection. Consequently, the raw estimates may be lower than the true cumulative incidence of a given region. As a result, to account for seroreversion when analyzing data from phase II of the seroprevalence study, \cite{lewin2022seroprevalence} also conducted a seroreversion substudy. In particular, a number of the individuals who tested postive for SARS-Cov-2 antibodies during phase I of the study were tested again in 2021. The number of these individuals as well as the number of positive tests were recorded. The data from both phases of the study are summarized in \cref{tab:dat}.\\
 \newline $ $
-It is important to note that the phase II data presented here only concern the unvaccinated population. While data for both those who were and were not vaccinated are presented in \cite{lewin2022seroprevalence}, we have chosen to focus on the unvaccinated population since none of the vaccinated individuals had seroreverted at the time and so it is not necessary for adjust for seroreversion.
+It is important to point out that the phase II data presented here only concern the unvaccinated population. While data for both those who were and were not vaccinated are presented in \cite{lewin2022seroprevalence}, we have chosen to focus on the unvaccinated population since none of the vaccinated individuals had seroreverted at the time and so it is not necessary for adjust for seroreversion. Finally, we note that for the remainder of the report, any notation that is redefined from the previous sections are within the context of the seroprevalence study in Quebec.
 
 \begin{table}[]
 \centering
@@ -23,7 +23,11 @@ Total                      & 173           & 7691        & 715                  
 \label{tab:dat}
 \end{table}
 \subsection{Adjusting for seroreversion}
-omg
+As mentioned above, not correcting for seroreversion when conducting seroprevalence analysis on data from phase II of the above mentioned study may result in unreliable estimates of regional cumulative incidences. This is because such analyses fail to account for those who have had a previous infection but had already seroreverted by the time of sample collection. Luckily, with the data from phase I of the study, for each region in Quebec, we can produce a valid estimate of the cumulative incidence between the beginning of the pandemic and May 2020. Additionally, from the seroreversion substudy, we can estimate the proportion of the antibody-positive population from phase I of the study that had seroreverted by phase II of the study. As a result, we can adjust the raw estimate of cumulative incidence from phase II by adding the product of the estimated cumulative incidence from phase I and the estimated proportion that have seroreverted. Mathematically, let $\hat{s}_{prev}$ be the cumulative incidence of a region in Quebec from phase I, $\hat{p}$ be the observed prevalence (proportion of positive samples) from phase II, and $sr$ be the proportion of seroreversion, we can estimate the cumulative incidence in phase II using
+\[
+\hat{s} = \hat{p} + \hat{s}_{prev} \times sr.
+\]
+
 
 \subsection{Model formulation}
 To maintian nice properties of Bayesian model while still accounting for seroreversion, can combine.
@@ -73,9 +77,9 @@ Other                      & 0.090               & 0.080                  & 0.10
 \hline
                            & \multicolumn{3}{c}{\textbf{Adjusted for seroreversion and test-kit performance}} \\
                            & mean                & lowerbound             & upperbound             \\
-Montreal-Laval             & 0.161               & 0.115                  & 0.177                  \\
-Surrounding Montreal-Laval & 0.107               & 0.062                  & 0.120                  \\
-Other                      & 0.100               & 0.056                  & 0.110                  \\
+Montreal-Laval             & 0.161               & 0.088                  & 0.201                  \\
+Surrounding Montreal-Laval & 0.107               & 0.037                  & 0.142                  \\
+Other                      & 0.100               & 0.037             & 0.122                  \\
 \hline
                            & \multicolumn{3}{c}{\textbf{Bayesian analysis adjusted for seroreversion and test-kit performance}}                                 \\
                            & median              & lowerbound             & upperbound             \\

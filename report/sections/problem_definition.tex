@@ -39,7 +39,7 @@ where $p(\cdot)$ is the prior density corresponding to each parameter of interes
 \subsection{Related frequentist approaches}
 \cite{meyer2022adjusting} compares the results from the above Bayesian model to a non-Bayesian version of the same analysis. In the non-Bayesian version of the analysis, given a specific region (or super-region, or the entire state), with the sample proportion of positive tests being denoted $\hat{p}$, we can estimate the cumulative incidence of that region by rearranging the equation that adjusts for test specificity and sensitivity.
 \[
-\hat{p} = s \times se + (1-s) \times (1 - sp) \implies s = (\hat{p} + sp - 1) / (se + sp - 1).
+p = s \times se + (1-s) \times (1 - sp) \implies \hat{s} = (\hat{p} + sp - 1) / (se + sp - 1).
 \]
 Note that here the sample proportion of positive tests plays the same role as observed prevalence in the Bayesian version of the analysis. The point estimate of the cumulative incidence is obtained by plugging in the estimated test specificity and sensitivity values from the validation studies. To quantify the uncertainty around each point estimate in terms of test-kit performance, \cite{meyer2022adjusting} constructs an iterval using the 95\% confidence interval endpoints from the validation studies. Let $\hat{se}, \hat{sp}$ denote the point estimates for test sensitivity and specificity from the validation studies, with the corresponding 95\% confidence intervals being $[se_l, se_u]$ and $[sp_l, sp_u]$. The uncertainty interval associated with $s$ can be written as
 \[
